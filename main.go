@@ -1,14 +1,29 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	var a, b, c, str string
+	var a, b, c string
 	var res, num, num2 int
-	fmt.Scan(&a, &b, &c)
+
+	myscanner := bufio.NewScanner(os.Stdin)
+	myscanner.Scan()
+	input := myscanner.Text()
+
+	var data []string
+	data = strings.Split(input, " ")
+	if len(data) > 3 {
+		panic("ошибка ввода")
+	}
+	a = data[0]
+	b = data[1]
+	c = data[2]
 
 	numbers := map[string]string{
 		"I":        "1",
@@ -113,106 +128,16 @@ func main() {
 		"C":        "100",
 	}
 	arabicNumbers := map[string]bool{
-		"1":   true,
-		"2":   true,
-		"3":   true,
-		"4":   true,
-		"5":   true,
-		"6":   true,
-		"7":   true,
-		"8":   true,
-		"9":   true,
-		"10":  true,
-		"11":  true,
-		"12":  true,
-		"13":  true,
-		"14":  true,
-		"15":  true,
-		"16":  true,
-		"17":  true,
-		"18":  true,
-		"19":  true,
-		"20":  true,
-		"21":  true,
-		"22":  true,
-		"23":  true,
-		"24":  true,
-		"25":  true,
-		"26":  true,
-		"27":  true,
-		"28":  true,
-		"29":  true,
-		"30":  true,
-		"31":  true,
-		"32":  true,
-		"33":  true,
-		"34":  true,
-		"35":  true,
-		"36":  true,
-		"37":  true,
-		"38":  true,
-		"39":  true,
-		"40":  true,
-		"41":  true,
-		"42":  true,
-		"43":  true,
-		"44":  true,
-		"45":  true,
-		"46":  true,
-		"47":  true,
-		"48":  true,
-		"49":  true,
-		"50":  true,
-		"51":  true,
-		"52":  true,
-		"53":  true,
-		"54":  true,
-		"55":  true,
-		"56":  true,
-		"57":  true,
-		"58":  true,
-		"59":  true,
-		"60":  true,
-		"61":  true,
-		"62":  true,
-		"63":  true,
-		"64":  true,
-		"65":  true,
-		"66":  true,
-		"67":  true,
-		"68":  true,
-		"69":  true,
-		"70":  true,
-		"71":  true,
-		"72":  true,
-		"73":  true,
-		"74":  true,
-		"75":  true,
-		"76":  true,
-		"77":  true,
-		"78":  true,
-		"79":  true,
-		"80":  true,
-		"81":  true,
-		"82":  true,
-		"83":  true,
-		"84":  true,
-		"85":  true,
-		"86":  true,
-		"87":  true,
-		"88":  true,
-		"89":  true,
-		"90":  true,
-		"91":  true,
-		"92":  true,
-		"93":  true,
-		"94":  true,
-		"95":  true,
-		"96":  true,
-		"97":  true,
-		"98":  true,
-		"99":  true,
-		"100": true,
+		"1":  true,
+		"2":  true,
+		"3":  true,
+		"4":  true,
+		"5":  true,
+		"6":  true,
+		"7":  true,
+		"8":  true,
+		"9":  true,
+		"10": true,
 	}
 	if (arabicNumbers[a] && !arabicNumbers[c]) || (!arabicNumbers[a] && arabicNumbers[c]) {
 		panic("Ошибка ввода")
@@ -239,41 +164,59 @@ func main() {
 		}
 
 	}
-
-	for key, val := range numbers {
-		if key == a {
-			a = val
-			break
-		}
-	}
-	for key, val := range numbers {
-		if key == c {
-			c = val
-			num, _ = strconv.Atoi(a)
-			num2, _ = strconv.Atoi(c)
-
-			switch {
-			case b == "+":
-				res = num + num2
-			case b == "-":
-				res = num - num2
-			case b == "*":
-				res = num * num2
-			case b == "/":
-				res = num / num2
+	if !arabicNumbers[a] && !arabicNumbers[c] {
+		for key, val := range numbers {
+			if key == a {
+				a = val
+				break
 			}
-			str = strconv.Itoa(res)
-			break
+		}
+		for key, val := range numbers {
+			if key == c {
+				c = val
+			}
 		}
 
-	}
+		num, _ = strconv.Atoi(a)
+		num2, _ = strconv.Atoi(c)
 
-	for key, val := range numbers {
-		if val == str {
-			str = key
-			fmt.Print(str)
-			break
+		if num < 1 || num > 10 || num2 < 1 || num2 > 10 {
+			panic("Ошибка ввода")
+		}
+
+		switch b {
+		case "+":
+			res = num + num2
+		case "-":
+			res = num - num2
+		case "*":
+			res = num * num2
+		case "/":
+			if num2 == 0 {
+				panic("Ошибка ввода")
+			}
+			res = num / num2
+		default:
+			panic("Ошибка ввода")
+		}
+		if res < 1 {
+			panic("Ошибка ввода")
+		}
+
+		if !arabicNumbers[a] && !arabicNumbers[c] && res < 1 {
+			panic("Ошибка ввода")
+		}
+		if arabicNumbers[a] && arabicNumbers[c] && res < 0 {
+			fmt.Print(res)
+		} else {
+			str := strconv.Itoa(res)
+			for key, val := range numbers {
+				if val == str {
+					str = key
+					fmt.Print(str)
+					break
+				}
+			}
 		}
 	}
-
 }
